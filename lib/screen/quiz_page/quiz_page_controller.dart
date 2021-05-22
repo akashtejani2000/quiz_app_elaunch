@@ -15,26 +15,27 @@ class QuizPageController extends GetxController {
   RxInt timer = 30.obs;
   RxString showTimer = "30".obs;
   RxBool cancelTimer = false.obs;
-  Color colorShow = Colors.indigo;
-  Color rightAns = Colors.green;
-  Color wrongAns = Colors.red;
+  Color rightAnsColor = Colors.green;
+  Color wrongAnsColor = Colors.red;
   RxInt currentQuestion = 0.obs;
-  RxInt mark = 0.obs;
+  RxBool disableAnswer = false.obs;
+  RxInt rightAns = 0.obs;
+  RxInt wrongAns = 0.obs;
 
   Timer time;
 
-  List<QuizQuestionOption> quizOption = [];
   Stream<List<QuizDetails>> dataStream;
-  List<QuizDetails> quizDetails = [];
   StreamSubscription subscription;
   List<QuizDetails> quizData = [];
 
-  List<Color> buttonColor = [
-    Colors.indigo,
-    Colors.indigo,
-    Colors.indigo,
-    Colors.indigo,
-  ];
+  // RxList<Color> buttonColor = [
+  //   Colors.indigo,
+  //   Colors.indigo,
+  //   Colors.indigo,
+  //   Colors.indigo,
+  // ].obs;
+
+  RxList<OptionMenu> optionMenu = RxList<OptionMenu>();
 
   @override
   void onInit() {
@@ -42,18 +43,30 @@ class QuizPageController extends GetxController {
     copyDB();
     builder();
     startTimer();
-    print(quizData.length);
+    optionMenu.add(
+      OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option1),
+    );
+    optionMenu.add(
+      OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option2),
+    );
+    optionMenu.add(
+      OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option3),
+    );
+    optionMenu.add(
+      OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option4),
+    );
+
+    print(optionMenu);
     update();
   }
 
   builder() async {
     quizDatabase = await $FloorQuizDatabase.databaseBuilder('quiz.db').build();
     quizDao = quizDatabase.quizDao;
-    dataStream = quizDao.getAllData();
+    dataStream = quizDao?.getAllData();
     try {
       subscription = quizDao.getAllData().listen((event) {
         quizData = event;
-        print("event : ${quizData.length}");
       });
     } catch (e) {
       print(e);
@@ -61,30 +74,45 @@ class QuizPageController extends GetxController {
     update();
   }
 
-  checkAnswer(String ans) async {
-    if (quizData[currentQuestion.value].option1 == quizData[currentQuestion.value].answer ||
-        quizData[currentQuestion.value].option2 == quizData[currentQuestion.value].answer ||
-        quizData[currentQuestion.value].option3 == quizData[currentQuestion.value].answer ||
-        quizData[currentQuestion.value].option4 == quizData[currentQuestion.value].answer) {
-      colorShow = rightAns;
-      mark.value = mark.value + 1;
-      quizPositionNext();
-      update();
+  checkAnswer(int index) async {
+    if (optionMenu[index].title.toString() == quizData[currentQuestion.value].answer) {
+      var op = optionMenu[index];
+      op.color = rightAnsColor;
+      optionMenu[index] = op;
+      rightAns++;
+      print("Color : Green");
     } else {
-      colorShow = wrongAns;
-      print("Wrong Color : ${colorShow.toString()}");
+      var op = optionMenu[index];
+      op.color = wrongAnsColor;
+      optionMenu[index] = op;
+      wrongAns++;
+      print("color : Red");
     }
-
+    cancelTimer.value = true;
+    disableAnswer.value = true;
+    Timer(Duration(seconds: 1), quizPositionNext);
     update();
   }
 
   quizPositionNext() async {
+    optionMenu.clear();
     cancelTimer.value = false;
     timer.value = 30;
     startTimer();
     if (currentQuestion.value < quizData.length - 1) {
       currentQuestion.value++;
-      print(currentQuestion.value);
+      optionMenu.add(
+        OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option1),
+      );
+      optionMenu.add(
+        OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option2),
+      );
+      optionMenu.add(
+        OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option3),
+      );
+      optionMenu.add(
+        OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option4),
+      );
     } else {
       openAndCloseLoadingDialog();
     }
@@ -148,4 +176,11 @@ class QuizPageController extends GetxController {
 
     Navigator.of(Get.overlayContext).pop();
   }
+}
+
+class OptionMenu {
+  String title;
+  Color color;
+
+  OptionMenu({this.color, this.title});
 }

@@ -36,60 +36,57 @@ Widget answerCheckBox({String title, Color backGroundColor, IconData icon}) {
       color: backGroundColor,
     ),
     child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            AutoSizeText(
-              title,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            Icon(
-              icon,
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: TextStyle(
               color: Colors.white,
-              size: 25.0,
-            )
-          ],
-        ),
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          Icon(
+            icon,
+            color: Colors.white,
+            size: 25.0,
+          )
+        ],
       ),
     ),
   );
 }
 
-Widget quizButton({String title, Color color}) {
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 8.0),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-      child: MaterialButton(
-        onPressed: () {
-          controller.checkAnswer(title);
-          print("Color : ${controller.colorShow.toString()}");
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100.0),
-            color: Colors.indigo,
-          ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
-              child: Text(
-                title,
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
-              ),
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
-}
+// Widget quizButton({String title}) {
+//   return Padding(
+//     padding: const EdgeInsets.only(bottom: 8.0),
+//     child: Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 30.0),
+//       child: MaterialButton(
+//         onPressed: () {
+//           controller.checkAnswer();
+//           controller.quizPositionNext();
+//         },
+//         child: Container(
+//           decoration: BoxDecoration(
+//             borderRadius: BorderRadius.circular(100.0),
+//             color: Colors.indigo,
+//           ),
+//           child: Center(
+//             child: Padding(
+//               padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
+//               child: Text(
+//                 title,
+//                 style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
+//     ),
+//   );
+// }

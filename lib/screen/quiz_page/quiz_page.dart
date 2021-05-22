@@ -70,23 +70,57 @@ class _QuizPageState extends State<QuizPage> {
               ),
               Spacer(),
               Container(
-                child: Column(
-                  children: [
-                    quizButton(
-                      title: quizPageController.quizData[quizPageController.currentQuestion.value].option1,
-                    ),
-                    quizButton(
-                      title: quizPageController.quizData[quizPageController.currentQuestion.value].option2,
-                    ),
-                    quizButton(
-                      title: quizPageController.quizData[quizPageController.currentQuestion.value].option3,
-                    ),
-                    quizButton(
-                      title: quizPageController.quizData[quizPageController.currentQuestion.value].option4,
-                    ),
-                  ],
-                ),
-              ),
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: quizPageController.optionMenu.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                          child: Obx(
+                            () => MaterialButton(
+                              onPressed: () {
+                                quizPageController.checkAnswer(index);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100.0),
+                                    color: quizPageController.optionMenu[index].color,
+                                  ),
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
+                                      child: Text(
+                                        quizPageController.optionMenu[index].title.toString(),
+                                        style:
+                                            TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      })
+                  // Column(
+                  //   children: [
+                  //     quizButton(
+                  //       title: quizPageController.quizData[quizPageController.currentQuestion.value].option1,
+                  //     ),
+                  //     quizButton(
+                  //       title: quizPageController.quizData[quizPageController.currentQuestion.value].option2,
+                  //     ),
+                  //     quizButton(
+                  //       title: quizPageController.quizData[quizPageController.currentQuestion.value].option3,
+                  //     ),
+                  //     quizButton(
+                  //       title: quizPageController.quizData[quizPageController.currentQuestion.value].option4,
+                  //     ),
+                  //   ],
+                  // ),
+                  ),
               TextButton(
                   onPressed: () {
                     if (quizPageController.currentQuestion.value == quizPageController.quizData.length - 1) {
@@ -106,29 +140,37 @@ class _QuizPageState extends State<QuizPage> {
                     ),
                   )),
               Spacer(),
-              Container(
-                color: Colors.grey[200],
-                height: 50.0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.indigo,
+              Obx(
+                () => Container(
+                  color: Colors.grey[200],
+                  height: 50.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.indigo,
+                        ),
+                        height: 50,
+                        width: 50,
+                        child: Center(
+                          child: Text(
+                            quizPageController.showTimer.value,
+                            style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),
+                          ),
+                        ),
                       ),
-                      height: 50,
-                      width: 50,
-                      child: Obx(() => Center(
-                            child: Text(
-                              quizPageController.showTimer.value,
-                              style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),
-                            ),
-                          )),
-                    ),
-                    answerCheckBox(title: "Right", backGroundColor: Colors.green, icon: Icons.check),
-                    answerCheckBox(title: "Wrong", backGroundColor: Colors.red, icon: Icons.close),
-                  ],
+                      answerCheckBox(
+                          title: quizPageController.rightAns.value.toString(),
+                          backGroundColor: Colors.green,
+                          icon: Icons.check),
+                      answerCheckBox(
+                          title: quizPageController.wrongAns.value.toString(),
+                          backGroundColor: Colors.red,
+                          icon: Icons.close),
+                    ],
+                  ),
                 ),
               )
             ],
