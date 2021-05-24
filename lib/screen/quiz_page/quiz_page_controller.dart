@@ -7,13 +7,14 @@ import 'package:quize_app_elaunch/floor/dao/quiz_dao.dart';
 import 'package:quize_app_elaunch/floor/database/quiz_database.dart';
 import 'package:quize_app_elaunch/floor/db_helper.dart';
 import 'package:quize_app_elaunch/floor/model/quiz_data.dart';
+import 'package:quize_app_elaunch/routs/app_routs.dart';
 
 class QuizPageController extends GetxController {
   QuizDatabase quizDatabase;
   QuizDao quizDao;
 
-  RxInt timer = 30.obs;
-  RxString showTimer = "30".obs;
+  RxInt timer = 10.obs;
+  RxString showTimer = "10".obs;
   RxBool cancelTimer = false.obs;
   Color rightAnsColor = Colors.green;
   Color wrongAnsColor = Colors.red;
@@ -22,18 +23,15 @@ class QuizPageController extends GetxController {
   RxInt rightAns = 0.obs;
   RxInt wrongAns = 0.obs;
 
+  RxBool onTap = false.obs;
+
   Timer time;
 
   Stream<List<QuizDetails>> dataStream;
+
+  // ignore: cancel_subscriptions
   StreamSubscription subscription;
   List<QuizDetails> quizData = [];
-
-  // RxList<Color> buttonColor = [
-  //   Colors.indigo,
-  //   Colors.indigo,
-  //   Colors.indigo,
-  //   Colors.indigo,
-  // ].obs;
 
   RxList<OptionMenu> optionMenu = RxList<OptionMenu>();
 
@@ -41,22 +39,9 @@ class QuizPageController extends GetxController {
   void onInit() {
     super.onInit();
     copyDB();
-    builder();
-    startTimer();
-    optionMenu.add(
-      OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option1),
-    );
-    optionMenu.add(
-      OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option2),
-    );
-    optionMenu.add(
-      OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option3),
-    );
-    optionMenu.add(
-      OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option4),
-    );
 
-    print(optionMenu);
+    builder();
+
     update();
   }
 
@@ -66,7 +51,23 @@ class QuizPageController extends GetxController {
     dataStream = quizDao?.getAllData();
     try {
       subscription = quizDao.getAllData().listen((event) {
+        print("stream updated");
         quizData = event;
+
+        optionMenu.add(
+          OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option1),
+        );
+        optionMenu.add(
+          OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option2),
+        );
+        optionMenu.add(
+          OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option3),
+        );
+        optionMenu.add(
+          OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option4),
+        );
+
+        startTimer();
       });
     } catch (e) {
       print(e);
@@ -75,32 +76,33 @@ class QuizPageController extends GetxController {
   }
 
   checkAnswer(int index) async {
-    if (optionMenu[index].title.toString() == quizData[currentQuestion.value].answer) {
+    if (!onTap.value) {
+      onTap.value = true;
       var op = optionMenu[index];
-      op.color = rightAnsColor;
-      optionMenu[index] = op;
-      rightAns++;
-      print("Color : Green");
-    } else {
-      var op = optionMenu[index];
-      op.color = wrongAnsColor;
-      optionMenu[index] = op;
-      wrongAns++;
-      print("color : Red");
+      if (optionMenu[index].title.toString() == quizData[currentQuestion.value].answer) {
+        op.color = rightAnsColor;
+        optionMenu[index] = op;
+        rightAns += 1;
+      } else {
+        op.color = wrongAnsColor;
+        optionMenu[index] = op;
+        wrongAns += 1;
+      }
+      cancelTimer.value = true;
+      disableAnswer.value = true;
+      Timer(Duration(seconds: 2), quizPositionNext);
+      update();
     }
-    cancelTimer.value = true;
-    disableAnswer.value = true;
-    Timer(Duration(seconds: 1), quizPositionNext);
-    update();
   }
 
   quizPositionNext() async {
     optionMenu.clear();
     cancelTimer.value = false;
-    timer.value = 30;
-    startTimer();
+
     if (currentQuestion.value < quizData.length - 1) {
+      timer.value = 10;
       currentQuestion.value++;
+
       optionMenu.add(
         OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option1),
       );
@@ -113,18 +115,27 @@ class QuizPageController extends GetxController {
       optionMenu.add(
         OptionMenu(color: Colors.indigo, title: quizData[currentQuestion.value].option4),
       );
+      startTimer();
+      print("current : ${currentQuestion.value}");
     } else {
-      openAndCloseLoadingDialog();
+      time?.cancel();
+      Get.toNamed(AppRoute.resultPage);
     }
-    update();
   }
 
   void startTimer() async {
     time?.cancel();
     const oneSecond = Duration(seconds: 1);
+    if (onTap.value) {
+      onTap.value = false;
+      update();
+    }
     time = Timer.periodic(oneSecond, (Timer t) {
       if (timer < 1) {
         t.cancel();
+        cancelTimer.value = true;
+        disableAnswer.value = true;
+        wrongAns++;
         quizPositionNext();
       } else if (cancelTimer.value == true) {
         t.cancel();
@@ -133,48 +144,8 @@ class QuizPageController extends GetxController {
         update();
       }
       showTimer.value = timer.string;
-      print(showTimer);
     });
     update();
-  }
-
-  Future<void> openAndCloseLoadingDialog() async {
-    showDialog(
-      context: Get.overlayContext,
-      barrierDismissible: false,
-      builder: (_) => WillPopScope(
-        onWillPop: () async => false,
-        child: Center(
-          child: SizedBox(
-            width: 60,
-            height: 60,
-            child: CircularProgressIndicator(
-              strokeWidth: 10,
-            ),
-          ),
-        ),
-      ),
-    );
-    await Future.delayed(Duration(seconds: 1));
-    Get.dialog(
-      AlertDialog(
-        title: Text("Finish Game"),
-        content: Text("This should not be closed automatically"),
-        actions: <Widget>[
-          FlatButton(
-            child: Text("CLOSE"),
-            onPressed: () {
-              Get.back();
-            },
-          )
-        ],
-      ),
-      barrierDismissible: false,
-    );
-
-    await Future.delayed(Duration(seconds: 3));
-
-    Navigator.of(Get.overlayContext).pop();
   }
 }
 

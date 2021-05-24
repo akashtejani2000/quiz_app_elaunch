@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quize_app_elaunch/routs/app_routs.dart';
 import 'package:quize_app_elaunch/screen/quiz_page/quiz_page.dart';
 
 Future<void> main() async {
@@ -8,6 +9,8 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
+var navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -15,6 +18,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Quiz App",
       home: QuizPage(),
+      initialRoute: AppRoute.quizPage,
+      getPages: AppRoute.routList,
+      navigatorKey: navigatorKey,
     );
   }
 }
