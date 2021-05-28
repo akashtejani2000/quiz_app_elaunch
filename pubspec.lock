@@ -21,7 +21,7 @@ packages:
       name: args
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "1.6.0"
   async:
     dependency: transitive
     description:
@@ -29,13 +29,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.5.0"
-  auto_size_text:
-    dependency: "direct main"
-    description:
-      name: auto_size_text
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -148,13 +141,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
-  confetti:
-    dependency: "direct main"
-    description:
-      name: confetti
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.5"
   convert:
     dependency: transitive
     description:
@@ -445,20 +431,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.8"
-  random_color:
-    dependency: transitive
-    description:
-      name: random_color
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.5"
-  scratcher:
-    dependency: "direct main"
-    description:
-      name: scratcher
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.0"
   shelf:
     dependency: transitive
     description:
@@ -631,7 +603,7 @@ packages:
       name: yaml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "2.2.1"
 sdks:
   dart: ">=2.12.0 <3.0.0"
-  flutter: ">=2.0.0"
+  flutter: ">=1.22.2"

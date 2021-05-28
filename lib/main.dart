@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quize_app_elaunch/routs/app_routs.dart';
-import 'package:quize_app_elaunch/screen/quiz_page/quiz_page.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   runApp(MyApp());
 }
-
-var navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   @override
@@ -17,10 +12,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Quiz App",
-      home: QuizPage(),
-      initialRoute: AppRoute.quizPage,
+      initialRoute: AppRoute.splashScreen,
       getPages: AppRoute.routList,
-      navigatorKey: navigatorKey,
     );
   }
 }
