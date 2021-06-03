@@ -5,12 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quize_app_elaunch/Database/floor/dao/dynamic_quiz_dao.dart';
+import 'package:quize_app_elaunch/Database/floor/database/dynamic_quiz_database.dart';
 import 'package:quize_app_elaunch/Database/floor/model/dynamic_quiz_model.dart';
 import 'package:quize_app_elaunch/common/db_helper.dart';
 import 'package:quize_app_elaunch/common/quiz_type_enum.dart';
 import 'package:quize_app_elaunch/common/widget.dart';
 import 'package:quize_app_elaunch/routs/app_routs.dart';
-import 'package:quize_app_elaunch/Database/floor/database/dynamic_quiz_database.dart';
 
 String enumToString(Object o) => o.toString().split('.').last;
 
@@ -21,6 +21,8 @@ class DynamicQuizController extends GetxController {
   DynamicQuizDatabase dynamicQuizDatabase;
 
   RxInt currentIndex = 0.obs;
+
+  TextEditingController answerController = TextEditingController();
 
   Stream<List<QuizData>> streamData;
   RxList<QuizData> getData = <QuizData>[].obs;
@@ -125,7 +127,6 @@ class DynamicQuizController extends GetxController {
                   checkString.value = getData[currentIndex.value].option1;
                   checkAnswer();
                   opBrgAns1 = colorShow;
-
                   update();
                 },
               ),
@@ -263,6 +264,29 @@ class DynamicQuizController extends GetxController {
           ),
         );
         break;
+      case QuestionType.fill_answer:
+        return Container(
+            child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Container(
+                width: MediaQuery.of(Get.context).size.width / 2,
+                child: TextFormField(
+                  controller: answerController,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    hintText: "fill the answer",
+                  ),
+                ),
+              ),
+            ),
+            fillAnswerQuestion(option: getData[currentIndex.value].option1),
+            fillAnswerQuestion(option: getData[currentIndex.value].option2),
+            fillAnswerQuestion(option: getData[currentIndex.value].option3),
+            fillAnswerQuestion(option: getData[currentIndex.value].option4),
+          ],
+        ));
       default:
         {
           return Container();
@@ -276,6 +300,8 @@ class DynamicQuizController extends GetxController {
     if (currentIndex.value < getData.length - 1) {
       start.value = 10;
       currentIndex.value++;
+
+      answerController.clear();
 
       isSelectOp1.value = false;
       isSelectOp2.value = false;
@@ -352,6 +378,17 @@ class DynamicQuizController extends GetxController {
         delayTimer.toString();
         update();
         break;
+      case QuestionType.fill_answer:
+        if (answerController.text == getData[currentIndex.value].answer) {
+          print("Right Answer");
+          correctAns++;
+        } else {
+          print("wrong Answer");
+          wrongAns++;
+        }
+        delayTimer.toString();
+        update();
+        break;
     }
     update();
   }
@@ -372,6 +409,8 @@ class DynamicQuizController extends GetxController {
     selectRadioGroup = RadioEnum.none;
 
     checkString.value = "";
+
+    answerController.clear();
 
     builder();
 

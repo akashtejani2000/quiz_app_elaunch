@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:quize_app_elaunch/common/quiz_type_enum.dart';
 
 Widget generalQuestionOption({String title, Color color, Function onTap}) {
@@ -111,6 +112,23 @@ Widget checkAnswerCircle({Color color, String title}) {
       child: Text(
         title,
         style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500),
+      ),
+    ),
+  );
+}
+
+Widget fillAnswerQuestion({String option}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+    child: Container(
+      width: MediaQuery.of(Get.context).size.width / 2,
+      child: Text(
+        option,
+        style: TextStyle(
+          fontSize: 20.0,
+          fontWeight: FontWeight.w500,
+          color: Colors.black,
+        ),
       ),
     ),
   );

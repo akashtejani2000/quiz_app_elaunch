@@ -30,7 +30,7 @@ class ResultPage extends StatelessWidget {
                         children: [
                           TextSpan(
                               text: "${dynamicQuizController.correctAns.value.toString()}",
-                              style: TextStyle(color: Colors.green, fontSize: 25.0))
+                              style: TextStyle(color: Colors.green, fontSize: 25.0)),
                         ]),
                   ),
                   SizedBox(
