@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quize_app_elaunch/routs/app_routs.dart';
-import 'package:quize_app_elaunch/screen/dynamic_quiz_page/dynamic_quiz_controller.dart';
+import 'package:quize_app_elaunch/screen/result_page/result_page_controller.dart';
 
 class ResultPage extends StatelessWidget {
-  final DynamicQuizController dynamicQuizController = Get.put(DynamicQuizController());
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,52 +11,62 @@ class ResultPage extends StatelessWidget {
         title: Text('Result Page'),
         automaticallyImplyLeading: false,
       ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                children: [
-                  RichText(
-                    text: TextSpan(
-                        text: "Correct Answer : ",
-                        style: TextStyle(fontSize: 25, color: Colors.black),
-                        children: [
-                          TextSpan(
-                              text: "${dynamicQuizController.correctAns.value.toString()}",
-                              style: TextStyle(color: Colors.green, fontSize: 25.0)),
-                        ]),
+      body: GetBuilder<ResultController>(
+        init: ResultController(),
+        builder: (controller) {
+          return Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Column(
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                            text: "Correct Answer : ",
+                            style: TextStyle(fontSize: 25, color: Colors.black),
+                            children: [
+                              TextSpan(
+                                  text: "${controller.result.correctAnswer}",
+                                  style: TextStyle(color: Colors.green, fontSize: 25.0)),
+                            ]),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          text: "Wrong Answer : ",
+                          style: TextStyle(fontSize: 25, color: Colors.black),
+                          children: [
+                            TextSpan(
+                              text: "${controller.result.wrongAnswer}",
+                              style: TextStyle(color: Colors.red, fontSize: 25.0),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    height: 10.0,
+                ),
+                TextButton(
+                  onPressed: () {
+                    controller.resetQuiz();
+                    //   Get.toNamed(AppRoute.splashScreen);
+                  },
+                  child: Text(
+                    'Reset Quiz',
+                    style: TextStyle(color: Colors.red, fontSize: 18),
                   ),
-                  RichText(
-                    text: TextSpan(
-                        text: "Wrong Answer : ",
-                        style: TextStyle(fontSize: 25, color: Colors.black),
-                        children: [
-                          TextSpan(
-                              text: "${dynamicQuizController.wrongAns.value.toString()}",
-                              style: TextStyle(color: Colors.green, fontSize: 25.0))
-                        ]),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            TextButton(
-                onPressed: () {
-                  dynamicQuizController.resetQuiz();
-                  Get.offAndToNamed(AppRoute.dynamicQuizPage);
-                },
-                child: Text(
-                  'Reset Quiz',
-                  style: TextStyle(color: Colors.red, fontSize: 18),
-                ))
-          ],
-        ),
+          );
+        },
       ),
     );
   }

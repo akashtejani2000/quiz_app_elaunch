@@ -31,7 +31,6 @@ dependencies:
   get: ^3.26.0
   floor: ^0.19.1
   google_fonts: ^1.1.2
-  enum_to_string: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +53,7 @@ flutter:
   assets:
     - assets/dbFile/
     - assets/scretcher/
+    - assets/quiz_level/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

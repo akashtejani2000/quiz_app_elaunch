@@ -80,7 +80,7 @@ class _$DynamicQuizDatabase extends DynamicQuizDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `QuizData` (`id` INTEGER, `question` TEXT, `option1` TEXT, `option2` TEXT, `option3` TEXT, `option4` TEXT, `answer` TEXT, `type` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `QuizData` (`id` INTEGER, `question` TEXT, `option1` TEXT, `option2` TEXT, `option3` TEXT, `option4` TEXT, `answer` TEXT, `type` TEXT, `level` TEXT, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -118,6 +118,26 @@ class _$DynamicQuizDao extends DynamicQuizDao {
             option3: row['option3'] as String,
             option4: row['option4'] as String,
             answer: row['answer'] as String,
-            type: row['type'] as String));
+            type: row['type'] as String,
+            level: row['level'] as String));
+  }
+
+  @override
+  Stream<List<QuizData>> getDataByLevel(int level) {
+    return _queryAdapter.queryListStream(
+        'SELECT * from DynamicQuiz where level=?',
+        arguments: <dynamic>[level],
+        queryableName: 'QuizData',
+        isView: false,
+        mapper: (Map<String, dynamic> row) => QuizData(
+            id: row['id'] as int,
+            question: row['question'] as String,
+            option1: row['option1'] as String,
+            option2: row['option2'] as String,
+            option3: row['option3'] as String,
+            option4: row['option4'] as String,
+            answer: row['answer'] as String,
+            type: row['type'] as String,
+            level: row['level'] as String));
   }
 }

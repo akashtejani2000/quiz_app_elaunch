@@ -11,6 +11,16 @@ class QuizData {
   String option4;
   String answer;
   String type;
+  String level;
 
-  QuizData({this.id, this.question, this.option1, this.option2, this.option3, this.option4, this.answer, this.type});
+  QuizData(
+      {this.id,
+      this.question,
+      this.option1,
+      this.option2,
+      this.option3,
+      this.option4,
+      this.answer,
+      this.type,
+      this.level});
 }

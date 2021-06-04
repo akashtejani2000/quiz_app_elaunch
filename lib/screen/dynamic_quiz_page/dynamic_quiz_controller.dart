@@ -11,6 +11,7 @@ import 'package:quize_app_elaunch/common/db_helper.dart';
 import 'package:quize_app_elaunch/common/quiz_type_enum.dart';
 import 'package:quize_app_elaunch/common/widget.dart';
 import 'package:quize_app_elaunch/routs/app_routs.dart';
+import 'package:quize_app_elaunch/screen/result_page/result_model.dart';
 
 String enumToString(Object o) => o.toString().split('.').last;
 
@@ -30,6 +31,8 @@ class DynamicQuizController extends GetxController {
   RxBool checkLength = false.obs;
 
   RxString checkString = "".obs;
+
+  RxBool onTapChecked = false.obs;
 
   Color rightAnsColor = Colors.green;
   Color wrongAnsColor = Colors.red;
@@ -79,8 +82,8 @@ class DynamicQuizController extends GetxController {
     dynamicQuizDatabase = await $FloorDynamicQuizDatabase.databaseBuilder("Quiz.db").build();
     dynamicQuizDao = dynamicQuizDatabase.dynamicQuizDao;
     streamData = dynamicQuizDao?.getAllData();
-
-    subscription = dynamicQuizDao.getAllData().listen((event) {
+    int level = Get.find<int>(tag: "level_data");
+    subscription = dynamicQuizDao.getDataByLevel(level).listen((event) {
       getData
         ..clear()
         ..addAll(event);
@@ -103,15 +106,15 @@ class DynamicQuizController extends GetxController {
         if (start.value == 0) {
           timer.cancel();
           cancelTimer.value = true;
-          nextPageQuestion();
           wrongAns++;
+          nextPageQuestion();
         } else {
           start--;
-          print("start time : ${start.value}");
         }
         update();
       },
     );
+    update();
   }
 
   Widget questionSeparated() {
@@ -296,7 +299,9 @@ class DynamicQuizController extends GetxController {
 
   nextPageQuestion() async {
     cancelTimer.value = false;
+
     timer?.cancel();
+
     if (currentIndex.value < getData.length - 1) {
       start.value = 10;
       currentIndex.value++;
@@ -322,15 +327,30 @@ class DynamicQuizController extends GetxController {
       update();
     } else {
       timer?.cancel();
-      Get.offAndToNamed(AppRoute.resultPage);
+      Get
+        ..delete<ResultDataModel>(tag: "result_data")
+        ..put<ResultDataModel>(
+            ResultDataModel(
+              wrongAnswer: wrongAns.value,
+              correctAnswer: correctAns.value,
+              answerController: answerController,
+              checkString: checkString.value,
+              currentIndex: currentIndex.value,
+              getData: getData,
+              streamData: streamData,
+              isChecked: isChecked,
+              isSelectOp1: isSelectOp1.value,
+              isSelectOp2: isSelectOp2.value,
+              isSelectOp3: isSelectOp3.value,
+              isSelectOp4: isSelectOp4.value,
+              selectRadioGroup: selectRadioGroup,
+              startTime: start.value,
+            ),
+            tag: "result_data")
+        ..toNamed(AppRoute.resultPage);
+      print("Quiz Quite");
+      update();
     }
-
-    update();
-  }
-
-  prePageQuestion() async {
-    currentIndex.value--;
-    print(currentIndex.value);
     update();
   }
 
@@ -350,6 +370,7 @@ class DynamicQuizController extends GetxController {
         }
         delayTimer.toString();
         update();
+
         break;
       case QuestionType.general_selection:
         if (selectRadioGroup == RadioEnum.option1 &&
@@ -364,6 +385,7 @@ class DynamicQuizController extends GetxController {
         }
         delayTimer.toString();
         update();
+
         break;
       case QuestionType.multi_selection:
         List multiAns = getData[currentIndex.value].answer.split(",");
@@ -390,33 +412,6 @@ class DynamicQuizController extends GetxController {
         update();
         break;
     }
-    update();
-  }
-
-  resetQuiz() async {
-    correctAns.value = 0;
-    wrongAns.value = 0;
-    getData.clear();
-    currentIndex.value = 0;
-    getData.clear();
-    start.value;
-
-    isSelectOp1.value = false;
-    isSelectOp2.value = false;
-    isSelectOp3.value = false;
-    isSelectOp4.value = false;
-
-    selectRadioGroup = RadioEnum.none;
-
-    checkString.value = "";
-
-    answerController.clear();
-
-    builder();
-
-    isChecked.clear();
-
-    Get.offAndToNamed(AppRoute.dynamicQuizPage);
     update();
   }
 }

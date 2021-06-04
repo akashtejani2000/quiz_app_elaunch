@@ -10,11 +10,18 @@ class SplashController extends GetxController {
   void onInit() {
     super.onInit();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await loadJson().whenComplete(() => Timer(Duration(seconds: 5), () {
-            Get.toNamed(AppRoute.dynamicQuizPage);
-          }));
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) async {
+        await loadJson().whenComplete(
+          () => Timer(
+            Duration(seconds: 5),
+            () {
+              Get.offNamed(AppRoute.quizLevelScreen);
+            },
+          ),
+        );
+      },
+    );
   }
 
   Future<void> loadJson() async {
