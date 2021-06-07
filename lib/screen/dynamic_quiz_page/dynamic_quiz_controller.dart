@@ -64,6 +64,8 @@ class DynamicQuizController extends GetxController {
   RxInt start = 10.obs;
   RxBool cancelTimer = false.obs;
 
+  int level;
+
   @override
   void dispose() {
     super.dispose();
@@ -82,12 +84,13 @@ class DynamicQuizController extends GetxController {
     dynamicQuizDatabase = await $FloorDynamicQuizDatabase.databaseBuilder("Quiz.db").build();
     dynamicQuizDao = dynamicQuizDatabase.dynamicQuizDao;
     streamData = dynamicQuizDao?.getAllData();
-    int level = Get.find<int>(tag: "level_data");
+
+    level = Get.find<int>(tag: "level_data");
+
     subscription = dynamicQuizDao.getDataByLevel(level).listen((event) {
       getData
         ..clear()
         ..addAll(event);
-
       startTimer();
     });
   }
@@ -140,7 +143,6 @@ class DynamicQuizController extends GetxController {
                   checkString.value = getData[currentIndex.value].option2;
                   checkAnswer();
                   opBrgAns2 = colorShow;
-
                   update();
                 },
               ),
@@ -345,6 +347,7 @@ class DynamicQuizController extends GetxController {
               isSelectOp4: isSelectOp4.value,
               selectRadioGroup: selectRadioGroup,
               startTime: start.value,
+              level: level,
             ),
             tag: "result_data")
         ..toNamed(AppRoute.resultPage);

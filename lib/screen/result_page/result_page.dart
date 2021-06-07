@@ -21,6 +21,7 @@ class ResultPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Spacer(),
                 Align(
                   alignment: Alignment.center,
                   child: Column(
@@ -53,16 +54,42 @@ class ResultPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                TextButton(
-                  onPressed: () {
-                    controller.resetQuiz();
-                    //   Get.toNamed(AppRoute.splashScreen);
-                  },
-                  child: Text(
-                    'Reset Quiz',
-                    style: TextStyle(color: Colors.red, fontSize: 18),
-                  ),
+                Spacer(),
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        controller.nextLevelQuiz();
+                      },
+                      child: Text(
+                        'Next Level Quiz',
+                        style: TextStyle(color: Colors.red, fontSize: 18),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        controller.resetQuiz();
+                      },
+                      child: Text(
+                        'Reset quiz',
+                        style: TextStyle(color: Colors.red, fontSize: 18),
+                      ),
+                    ),
+                  ],
                 ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                // TextButton(
+                //   onPressed: () async {
+                //     controller.nextQuizLevel();
+                //   },
+                //   child: Text(
+                //     'Next Level',
+                //     style: TextStyle(color: Colors.blue, fontSize: 22),
+                //   ),
+                // ),
+                Spacer(),
               ],
             ),
           );

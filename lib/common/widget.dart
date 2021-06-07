@@ -93,7 +93,9 @@ class _RadioButtonWidgetState extends State<RadioButtonWidget> {
             onChanged: widget.onChanged,
             groupValue: widget.groupValue,
           ),
-          Expanded(child: Text(widget.label)),
+          Expanded(
+            child: Text(widget.label),
+          ),
         ],
       ),
     );

@@ -14,7 +14,7 @@ class SplashController extends GetxController {
       (_) async {
         await loadJson().whenComplete(
           () => Timer(
-            Duration(seconds: 5),
+            Duration(seconds: 1),
             () {
               Get.offNamed(AppRoute.quizLevelScreen);
             },
