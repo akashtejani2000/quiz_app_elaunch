@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quize_app_elaunch/screen/result_page/result_page_controller.dart';
+import 'package:quize_app_elaunch/screen/result_page/result_page_controller.dart';
 
 class ResultPage extends StatelessWidget {
   @override
@@ -68,7 +69,7 @@ class ResultPage extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        controller.resetQuiz();
+                      //  controller.resetQuiz();
                       },
                       child: Text(
                         'Reset quiz',
@@ -80,15 +81,6 @@ class ResultPage extends StatelessWidget {
                 SizedBox(
                   height: 10.0,
                 ),
-                // TextButton(
-                //   onPressed: () async {
-                //     controller.nextQuizLevel();
-                //   },
-                //   child: Text(
-                //     'Next Level',
-                //     style: TextStyle(color: Colors.blue, fontSize: 22),
-                //   ),
-                // ),
                 Spacer(),
               ],
             ),
